@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Multi Factors - Quark-Doc</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Multi Factors";
+        var mkdocs_page_input_path = "factor\\multi_factors.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Quark-Doc
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">How to use</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/setup/">Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/factor_validation/">Factor Training & Validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/backtesting/">Backtesting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Factor Mining</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_demo/">Factor Demo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_monitor/">Factor Monitor</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../sampler/">Sampler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../data_fields/">Data Fields</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_metrics/">Factor Metrics</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Multi Factors</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#manual-selection-of-factors">Manual selection of factors</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#auto-selection-of-factors">Auto selection of factors</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Quark-Doc</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Factor Mining</li>
+      <li class="breadcrumb-item active">Multi Factors</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="how-to-test-multi-factors">How to test multi factors</h1>
+<p><code>quark-fp/evaluation/selection.py</code> can be used to test multi factors.</p>
+<h3 id="manual-selection-of-factors">Manual selection of factors</h3>
+<p>Following script validates 2 factors together.<br />
+- <code>Monitor.Aux.Adaptive.Index.0</code> of <code>quark-fp/factor_pool/auxiliary.py</code><br />
+- <code>Monitor.Intensity.Adaptive.Index.0</code> of <code>quark-fp/factor_pool/sharpe.py</code></p>
+<pre><code class="language-python">def evaluate():
+    start_date = datetime.date(2024, 1, 1)
+    end_date = datetime.date(2024, 2, 1)
+    cwd = pathlib.Path(__file__).parent
+    tree = FactorTree()
+
+    aux_node = FactorTree.get_node(
+        name='Monitor.Aux.Adaptive.Index.0',
+        file=str(pathlib.Path(cwd).parent.joinpath('factor_pool', 'auxiliary.py'))
+    )
+    tree.append(aux_node)
+
+    factor_node = FactorTree.get_node(
+        name='Monitor.Intensity.Adaptive.Index.0',
+        file=str(pathlib.Path(cwd).parent.joinpath('factor_pool', 'sharpe.py'))
+    )
+    tree.append(factor_node)
+
+    tree.evaluate(
+        override_config={'Datalore.Calibration.l1': 0.001,
+                         'Datalore.Calibration.l2': 0.001},
+        resume=False,
+        start_date=start_date,
+        end_date=end_date,
+        dtype=['TradeData'],
+        validation_id=f'Simulation.{tree.digest()}',
+        pred_var=list(str(_) for _ in FutureTopic),
+        index_name='000016.SH',
+        pred_target='IH_MAIN',
+        strategy_mode=StrategyMode.sampling,
+        dev_pool=True,
+        override_cache=False
+    )
+</code></pre>
+<p>Note that some config can override <code>config.ini</code> using param <code>override_config</code>.</p>
+<hr />
+<h3 id="auto-selection-of-factors">Auto selection of factors</h3>
+<p>Class <code>FactorForest</code> preforms brute-force factor selection, which finally generate best 
+FactorTrees base on <code>metric_weight</code> stored in <code>{target_path}/factor_tree.csv</code>.
+<img alt="multi_factor.png" src="../../pics/multi_factor.png" /></p>
+<pre><code class="language-python">def run_forest():
+    start_date = datetime.date(2024, 10, 8)
+    end_date = datetime.date(2024, 10, 18)
+
+    factor_dir = pathlib.Path(os.getcwd()).parent.joinpath('quark-fp', 'factor_pool')
+    base_pool = None
+    # base_pool = ['sharpe', 'mt_tick', 'oir', 'momentum_bigorder', 'qua', 'voi', 'flow_in']
+    metrics_weight = {'Acc_Confidence_AUC': 1}
+    ema_alpha = 0.5
+    n_nodes = 4
+    branch_per_node = lambda node: 6 - node
+
+    market = 'cn'
+    index_name = '000016.SH'
+    resume = True
+    override_config = None
+    override_config_all = {&quot;Datalore.Calibration.pct_change_900.optimizer&quot;: 'Adam',
+                           &quot;Datalore.Calibration.state_3.optimizer&quot;: 'Adam',
+                           &quot;Datalore.Calibration.up_actual_3.optimizer&quot;: 'Adam',
+                           &quot;Datalore.Calibration.down_actual_3.optimizer&quot;: 'Adam',
+                           &quot;Datalore.Calibration.target_actual_3.optimizer&quot;: 'Adam',
+                           &quot;Datalore.Calibration.up_smoothed_3.optimizer&quot;: 'Adam',
+                           &quot;Datalore.Calibration.down_smoothed_3.optimizer&quot;: 'Adam',
+                           &quot;Datalore.Calibration.target_smoothed_3.optimizer&quot;: 'Adam'}
+    dtype = ['TradeData', 'TickData']
+    dev_pool = True
+    override_cache = False
+    target_path = end_date.strftime('%Y-%m-%d')
+
+    forest = FactorForest(n_nodes=n_nodes, branch_per_node=branch_per_node)
+    forest.run(
+        factor_dir=factor_dir,
+        base_pool=base_pool,
+        resume=resume,
+        override_config=override_config,
+        override_config_all=override_config_all,
+        start_date=start_date,
+        end_date=end_date,
+        metrics_weight=metrics_weight,
+        ema_alpha=ema_alpha, market=market,
+        dtype=dtype,
+        dev_pool=dev_pool,
+        override_cache=override_cache,
+        index_name=index_name,
+        target_path=target_path
+    )
+</code></pre>
+<ul>
+<li><code>factor_dir</code> &amp; <code>base_pool</code> are the factor path and files that determine scope of auto selection.  </li>
+<li><code>metrics_weight</code> is a weighted dict, based on which the overall metrics is calculated.  </li>
+<li><code>ema_alpha</code> defines how the overall metrics decay over time.  </li>
+<li><code>n_nodes-1</code> is the max depth of optimal FactorTree.</li>
+<li><code>branch_per_node</code> defines how many FactorTree is retained in certain depth. In the demo, it will be 5 trees in depth1, 4 trees in depth2 and 3 trees in depth3. </li>
+<li>Optimizer in <code>override_config_all</code> should be tuned to <code>Adam</code>, because Scipy and CVXPY optimizer may fail if dimension of <strong><em>X</em></strong> is too large.</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../factor_metrics/" class="btn btn-neutral float-left" title="Factor Metrics"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../factor_metrics/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

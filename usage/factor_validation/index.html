@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Factor Training & Validation - Quark-Doc</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Factor Training \u0026 Validation";
+        var mkdocs_page_input_path = "usage\\factor_validation.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Quark-Doc
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">How to use</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../setup/">Setup</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Factor Training & Validation</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#validator">validator</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#pred_var">pred_var</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configini">config.ini</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Factor Mining</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../factor/factor_demo/">Factor Demo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../factor/factor_monitor/">Factor Monitor</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../factor/sampler/">Sampler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../factor/data_fields/">Data Fields</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../factor/factor_metrics/">Factor Metrics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../factor/multi_factors/">Multi Factors</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Quark-Doc</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">How to use</li>
+      <li class="breadcrumb-item active">Factor Training & Validation</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="how-to-validate-factors">How to validate factors</h1>
+<p>Factor validation task is defined in <code>quark_validator/factor/validation.py</code>.</p>
+<p>A simple validation script is like:</p>
+<pre><code class="language-python">import os
+import datetime
+import time
+from quark.factor import IndexWeight
+from quark.profile import profile_cn_override
+from quark_validator.factor import validation
+from factor_pool.sharpe import IntensityAdaptiveIndexMonitor
+from factor_pool.auxiliary import TrendIndexAdaptiveAuxiliaryMonitor
+
+profile_cn_override() # cn trading time etc.
+
+os.environ['TZ'] = 'Asia/Shanghai'
+time.tzset()
+
+task = validation.ValidationTask(
+    start_date=datetime.date(2024,1,1),
+    end_date=datetime.date(2024,2,1),
+    index_name='000016.SH',
+    index_weights=IndexWeight(index_name='000016.SH'),
+    dtype=['TickData', 'TransactionData', 'OrderData'], # depend on which types of data are required in factor calculation 
+    override_cache=True, # true to re-calculate factor value, otherwise load from database
+    dev_pool=True, # store into dev_pool or prod_pool, must be true
+    validator=validation.InterTemporalValidation, # 2 types, details below
+    factor=[
+        IntensityAdaptiveIndexMonitor(sampling_interval=10, sample_size=20, weights=validation.INDEX_WEIGHTS, baseline_window=100, aligned_interval=False, name='Monitor.Intensity.Adaptive.Index.1'),
+        IntensityAdaptiveIndexMonitor(sampling_interval=15, sample_size=20, weights=validation.INDEX_WEIGHTS, baseline_window=100, aligned_interval=False, name='Monitor.Intensity.Adaptive.Index.2'),
+    ], # factor monitor instances
+    pred_var=[
+        'pct_change_900','state_3',
+        'up_actual_3','down_actual_3','target_actual_3',
+        'up_smoothed_3', 'down_smoothed_3','target_smoothed_3'
+    ], # pred_var, details below
+    pred_target='IH_MAIN',
+    sampling_interval=10, # interval in seconds for synthetic index
+    poly_degree=2, # degree of polynomial features for regression analysis
+    training_days=5, # using prior n-day data for model training
+    auxiliary_factor=[
+        TrendIndexAdaptiveAuxiliaryMonitor(sampling_interval=5,sample_size=20,alpha=0.0739,baseline_window=100,aligned_interval=False,name='Monitor.Aux.Adaptive.Index.0')
+    ] # only used when validator=validation.FactorParamsOptimizer, details below
+)
+
+task.run()
+validation.safe_exit(0)
+</code></pre>
+<p>Detail about certain params is as below.  </p>
+<hr />
+<h3 id="validator">validator</h3>
+<p>There are 2 options for validator, defined in <code>quark_validator/factor/validation.py</code>:  </p>
+<ul>
+<li>InterTemporalValidation:<br />
+    Model is trained with <strong><em>X</em></strong> = all factor monitors defined 
+    in <code>factors</code> with their <code>poly_degree</code> interaction terms. The
+    model uses <code>traning_day</code> days' data prior calibration date.<br>
+    <br></li>
+<li>FactorParamsOptimizer:<br />
+    For all factors defined in <code>factors</code>, calculate metrics using
+    cross validation, and select the best parameter set which will
+    be used in the next day.<br />
+    Parameter set is selected based on an ema(alpha=0.5) of previous
+    <strong>average</strong> metrics.<br />
+    New <code>auxiliary_factor</code> param is used to evaluate factors' incremental 
+    effects on metrics beyond aux factors. <code>TrendIndexAdaptiveAuxiliaryMonitor</code>
+    is a momentum factor for fitting factors having no predictive power on trend.</li>
+</ul>
+<hr />
+<h3 id="pred_var">pred_var</h3>
+<p>There are 8 basic topics and many extended topics, which are defined in <code>quark/calibration/future.py</code>:</p>
+<ul>
+<li><code>pct_change_900</code>: 900s/60=15min ret</li>
+<li><code>state_3</code>: recursive decoding state of level3</li>
+<li><code>up_actual_3</code>: up ret of level3</li>
+<li><code>down_actual_3</code>: down ret of level3</li>
+<li><code>target_actual_3</code>: up &amp; down ret of level3</li>
+<li><code>up_smoothed_3</code>: up ret of level3 considered potential loss</li>
+<li><code>down_smoothed_3</code>: down ret of level3 considered potential loss</li>
+<li><code>target_smoothed_3</code>: up &amp; down ret of level3 considered potential loss</li>
+</ul>
+<p>Extended topics include <code>pct_change_[300|900|1800|3600]</code>,<code>state_[2|3|4]</code> and <code>up_actual_[2|3|4]</code>...</p>
+<hr />
+<h3 id="configini">config.ini</h3>
+<p>There are also some validation config can be tuned in sections named 
+after <code>[Datalore]</code> in <code>runtime/config.ini</code>. Different params are allowed
+for different <code>pred_var</code>, which can be tuned in sub sections.</p>
+<p>Here are some worth mentioning:     </p>
+<ul>
+<li><code>l1</code> &amp; <code>l2</code>: for regression regularization.</li>
+<li><code>optimizer</code>: methods in <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html#minimize"><code>scipy.optimize.minimize</code></a>
+and solvers in <a href="https://www.cvxpy.org/tutorial/solvers/index.html"><code>CVXPY</code></a>, and <code>Adam</code>.</li>
+<li><code>balanced_label</code>: whether to adjust weight for y_pos and y_neg, available for <code>pct_change_900</code>, <code>state_3</code>, <code>target_actual_3</code> and <code>target_smoothed_3</code>.</li>
+<li><code>avoid_quantile_crossing</code>: true to avoid fitted quantile crossover</li>
+<li>
+<p><code>tol</code>: tolerance for scipy and cvxpy optimizer<br />
+  <br>
+  below are config for <code>Adam</code>:  </p>
+</li>
+<li>
+<p><code>enable_lr_scheduler</code></p>
+</li>
+<li><code>enable_diagnose</code></li>
+<li><code>lr</code></li>
+<li><code>validation_split</code></li>
+<li><code>patience</code></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../setup/" class="btn btn-neutral float-left" title="Setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../backtesting/" class="btn btn-neutral float-right" title="Backtesting">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../backtesting/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

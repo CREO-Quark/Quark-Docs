@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Data Fields - Quark-Doc</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Data Fields";
+        var mkdocs_page_input_path = "factor\\data_fields.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Quark-Doc
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">How to use</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/setup/">Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/factor_validation/">Factor Training & Validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/backtesting/">Backtesting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Factor Mining</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_demo/">Factor Demo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_monitor/">Factor Monitor</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../sampler/">Sampler</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Data Fields</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#tickdata">TickData</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#transactiondata-tradedata">TransactionData | TradeData</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#orderdata">OrderData</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#orderbook">OrderBook</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_metrics/">Factor Metrics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../multi_factors/">Multi Factors</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Quark-Doc</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Factor Mining</li>
+      <li class="breadcrumb-item active">Data Fields</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="available-data-fields">Available data fields</h1>
+<p>There are four frequently used subclass of <code>MarketData</code>.<br />
+- <code>TickData</code><br />
+- <code>TransactionData</code> | <code>TradeData</code><br />
+- <code>OrderData</code><br />
+- <code>OrderBook</code><br></p>
+<hr />
+<h3 id="tickdata">TickData</h3>
+<p>Represents tick data for a specific ticker.<br>
+<br>
+<strong>Properties</strong>:<br>
+- <code>ticker</code> : <code>str</code><br />
+The ticker symbol for the tick data.    <br />
+<br> 
+- <code>timestamp</code> : <code>float</code><br />
+The timestamp of the tick data  <br />
+<br> 
+- <code>bid</code> : <code>list[list[float | int]] | None</code><br />
+A list of bid prices and volumes. Optional, used to build the order book.<br />
+<br> 
+- <code>ask</code> : <code>list[list[float | int]] | None</code><br />
+A list of ask prices and volumes. Optional, used to build the order book.  <br />
+<br> 
+- <code>level_2</code> : <a href="./#orderbook"><code>OrderBook</code></a> | <code>None</code><br />
+The level 2 order book created from the bid and ask data.<br />
+<br> 
+- <code>order_book</code> : <a href="./#orderbook"><code>OrderBook</code></a> | <code>None</code><br />
+Alias for <code>level_2</code>.<br />
+<br> 
+- <code>last_price</code> : <code>float</code><br />
+The last traded price.<br />
+<br> 
+- <code>bid_price</code> : <code>float | None</code><br />
+The bid1 price.<br />
+<br> 
+- <code>ask_price</code> : <code>float | None</code><br />
+The ask1 price.<br />
+<br> 
+- <code>bid_volume</code> : <code>float | None</code><br />
+The bid1 volume.<br />
+<br> 
+- <code>ask_volume</code> : <code>float | None</code><br />
+The ask1 volume.<br />
+<br> 
+- <code>total_traded_volume</code> : <code>float</code><br />
+The total traded volume, accumulated from opening.<br />
+<br> 
+- <code>total_traded_notional</code> : <code>float</code><br />
+The total traded notional value, accumulated from opening.<br />
+<br> 
+- <code>total_trade_count</code> : <code>float</code><br />
+The total number of trades, accumulated from opening.<br />
+<br> 
+- <code>mid_price</code> : <code>float</code><br />
+The midpoint price calculated as the average of bid and ask prices.<br />
+<br> 
+- <code>market_price</code> : <code>float</code><br />
+The last traded price.  </p>
+<hr />
+<h3 id="transactiondata-tradedata">TransactionData | TradeData</h3>
+<p><code>TransactionData</code> represents transaction data for a specific ticker.<br>
+<code>TradeData</code> allows initialization with <code>trade_price</code> instead of <code>price</code> and 
+<code>trade_volume</code> instead of <code>volume</code>.
+It provides additional alias properties for these alternate names. <br>
+<br>
+<strong><em>SZ market provide canceling in TradeData with <code>price</code>, <code>notional</code>, <code>side.sign</code>, either <code>buy_id</code> or <code>sell_id</code> = 0, <a href="../factor_demo/#hooks-and-callbacks"><code>FilterMode.no_cancel</code></a> is used to filter canceling.</em></strong><br>
+<br>
+<strong>Properties</strong>:<br>
+- <code>ticker</code> : <code>str</code><br />
+The ticker symbol for the transaction data.<br />
+<br> 
+- <code>timestamp</code> : <code>float</code><br />
+The timestamp of the transaction data.<br />
+<br> 
+- <code>price</code> : <code>float</code><br />
+The price at which the transaction occurred.<br />
+<br> 
+- <code>volume</code> : <code>float | None</code><br />
+The volume of the transaction. <br />
+<br> 
+- <code>side</code> : <code>TransactionSide</code><br />
+The side of the transaction (buy, sell or cancel, <code>side.sign</code> 1, -1, 0). <br />
+<br> 
+- <code>multiplier</code> : <code>float</code><br />
+The multiplier for the transaction.<br />
+<br> 
+- <code>transaction_id</code> : <code>int | str | None</code><br />
+The identifier for the transaction.<br />
+<br>
+- <code>buy_id</code> : <code>int | str | None</code><br />
+The identifier for the buying transaction.<br />
+<br> 
+- <code>sell_id</code> : <code>int | str | None</code><br />
+The identifier for the selling transaction.<br />
+<br> 
+- <code>notional</code> : <code>float</code><br />
+The notional value of the transaction.<br />
+<br> 
+- <code>market_price</code> : <code>float</code><br />
+Alias for <code>price</code>.<br />
+<br> 
+- <code>flow</code> : <code>float</code><br />
+The flow of the transaction, calculated as <code>side.sign</code> * <code>volume</code>.  </p>
+<hr />
+<h3 id="orderdata">OrderData</h3>
+<p>Represents order data for a specific ticker.<br>
+<br>
+<strong><em>SH market provide canceling in OrderData with <code>order_type='D'</code>, <a href="../factor_demo/#hooks-and-callbacks"><code>FilterMode.no_cancel</code></a> is used to filter canceling.</em></strong><br>
+<br>
+<strong>Properties</strong>:<br>
+- <code>ticker</code> : <code>str</code><br />
+The ticker symbol for the order data.  <br />
+<br> 
+- <code>timestamp</code> : <code>float</code><br />
+The timestamp of the order data.<br />
+<br> 
+- <code>price</code> : <code>float</code><br />
+The price at which the order placed.<br />
+<br> 
+- <code>volume</code> : <code>float | None</code><br />
+The volume of the order. <br />
+<br> 
+- <code>side</code> : <code>TransactionSide</code><br />
+The side of the order (buy or sell, <code>side.order_sign</code> 1 or -1).<br />
+<br> 
+- <code>OrderType</code> : <code>OrderType</code> ## check here<br />
+<br> 
+- <code>order_id</code> : <code>int | str</code><br />
+Order id, associated with <code>buy_id</code> or <code>sell_id</code> in <code>TransactionData</code>.  </p>
+<hr />
+<h3 id="orderbook">OrderBook</h3>
+<p>Represents order book for a specific ticker.<br>
+<br>
+<strong>Properties</strong>:<br>
+- <code>ticker</code> : <code>str</code><br />
+The ticker symbol for the order book.  <br />
+<br> 
+- <code>timestamp</code> : <code>float</code><br />
+The timestamp of the order book.<br />
+<br> 
+- <code>mid_price</code> : <code>float</code><br />
+(ask1 price + bid1 price)/2<br />
+<br> 
+- <code>spread</code> : <code>float</code><br />
+ask1 price - bid1 price<br />
+<br> 
+- <code>spread_pct</code> : <code>float</code><br />
+<code>spread</code>/<code>mid_price</code><br />
+<br> 
+- <code>bid</code> : <code>Book</code><br />
+- <code>ask</code> : <code>Book</code><br />
+<code>Book</code> have property <code>price</code> and <code>volume</code>, which are <code>list[float]</code>.<br />
+<br> 
+- <code>best_bid_price</code> : <code>float</code><br />
+- <code>best_bid_volume</code> : <code>float</code><br />
+bid1 price and volume.<br />
+<br> 
+- <code>best_ask_price</code> : <code>float</code><br />
+- <code>best_ask_volume</code> : <code>float</code><br />
+ask1 price and volume.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../sampler/" class="btn btn-neutral float-left" title="Sampler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../factor_metrics/" class="btn btn-neutral float-right" title="Factor Metrics">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../sampler/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../factor_metrics/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

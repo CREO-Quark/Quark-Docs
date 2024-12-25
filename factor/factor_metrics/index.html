@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Factor Metrics - Quark-Doc</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Factor Metrics";
+        var mkdocs_page_input_path = "factor\\factor_metrics.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Quark-Doc
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">How to use</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/setup/">Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/factor_validation/">Factor Training & Validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/backtesting/">Backtesting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Factor Mining</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_demo/">Factor Demo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_monitor/">Factor Monitor</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../sampler/">Sampler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../data_fields/">Data Fields</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Factor Metrics</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#validation-process">Validation Process</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#metrics-functions">Metrics Functions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#metrics-file">Metrics File</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../multi_factors/">Multi Factors</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Quark-Doc</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Factor Mining</li>
+      <li class="breadcrumb-item active">Factor Metrics</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="intro-to-factor-metrics">Intro to factor metrics</h1>
+<h3 id="validation-process">Validation Process</h3>
+<p>In factor validation, quantile regression is performed for each quantile to draw confidence interval at certain alpha.<br />
+For a certain alpha (used 0.1), calculate metrics for <code>all</code>, <code>all_up</code>, <code>all_down</code>, <code>selected</code>, <code>selected_up</code> and <code>selected_down</code> of <code>y_val</code> 
+and <code>y_true</code> to test prediction power of the model. </p>
+<h3 id="metrics-functions">Metrics Functions</h3>
+<p>There are 5 types of metrics functions used to evaluate factor utility for every <code>pred_var</code>.<br />
+Note that <code>y_val</code> and <code>y_true</code> which are 1-d arrays are excepted for these functions. </p>
+<ol>
+<li><strong>Metrics of Error</strong>:<ul>
+<li>MAE (Mean Absolute Error)  </li>
+<li>MSE (Mean Squared Error)<br />
+<br></li>
+</ul>
+</li>
+<li><strong>Metrics of Accuracy</strong>:  <ul>
+<li>Acc (Accuracy)  </li>
+<li>Acc_Quantile (Accuracy by Quantile)<br />
+<br></li>
+</ul>
+</li>
+<li><strong>Metrics of Information</strong>:  <ul>
+<li>IC (Information Coefficient)  </li>
+<li>IC_Pearson (Pearson Correlation of Information Coefficient)<br />
+<br></li>
+</ul>
+</li>
+<li><strong>Metrics of Portfolio</strong>:<ul>
+<li>Kelly<br />
+<br></li>
+</ul>
+</li>
+<li><strong>AUC_ROC</strong> (Area Under the Curve - Receiver Operating Characteristic):  <ul>
+<li>Acc_AUC_ROC (Accuracy AUC ROC)  </li>
+<li>IC_AUC_ROC (Information Coefficient AUC ROC)  </li>
+</ul>
+</li>
+</ol>
+<hr />
+<h3 id="metrics-file">Metrics File</h3>
+<p>After validation, Quark will generate metric files for each <code>pred_var</code> ending with <code>.metircs.html</code> in target dump dir.<br />
+Following should be noted:</p>
+<ul>
+<li><code>accuracy_baseline</code>  <blockquote>
+<p>Baseline assumes that one already knows the positive and negative distribution of <code>y_true</code> and
+    makes decision based on the majority.<br />
+e.g. <code>accuracy_baseline</code> for a day with 6:4 or 4:6 pos/neg <code>y_true</code> is 0.6.<br />
+Accuracy metrics and its AUC-ROC is calculated using raw-baseline. And the accuracy baseline is around 60% and varys in days.  </p>
+</blockquote>
+</li>
+<li>Accuracy Confidence Curve &amp; IC Selection Curve  <blockquote>
+<p>For a good factor, its accuracy needs to increase linearly as the confidence level (1-alpha) increases, 
+    and when the confidence level is so large that selection ratio is too small, the accuracy is allowed to decrease.  </p>
+<p>A good factor AUC-ROC curve is like:</p>
+<p><img alt="factor_metrics.png" src="../../pics/factor_metrics.png" /></p>
+</blockquote>
+</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../data_fields/" class="btn btn-neutral float-left" title="Data Fields"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../multi_factors/" class="btn btn-neutral float-right" title="Multi Factors">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../data_fields/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../multi_factors/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

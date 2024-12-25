@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Factor Monitor - Quark-Doc</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Factor Monitor";
+        var mkdocs_page_input_path = "factor\\factor_monitor.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Quark-Doc
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">How to use</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/setup/">Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/factor_validation/">Factor Training & Validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/backtesting/">Backtesting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Factor Mining</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_demo/">Factor Demo</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Factor Monitor</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#inheritance-multi-inheritance">inheritance, multi-inheritance</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#signature">signature</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#market-data-filtering">market data filtering</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#requesting-external-data">requesting external data</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#factor-value-caching">factor value caching</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#advanced-feature-communicate-with-other-factor">advanced feature: communicate with other factor</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#advanced-feature-serializing-and-deserializing">advanced feature: serializing and deserializing</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#advanced-feature-logging-and-profiling">advanced feature: logging and profiling</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../sampler/">Sampler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../data_fields/">Data Fields</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_metrics/">Factor Metrics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../multi_factors/">Multi Factors</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Quark-Doc</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Factor Mining</li>
+      <li class="breadcrumb-item active">Factor Monitor</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="design-a-factor-monitor">Design a Factor Monitor</h1>
+<p>These steps should be noted when designing a <code>FactorMonitor</code> for customized purpose.</p>
+<hr />
+<h3 id="inheritance-multi-inheritance">inheritance, multi-inheritance</h3>
+<p>A factor must inherit from abstract class <code>FactorMonitor</code> in <code>quark.factor.utils</code>.<br />
+Could inherit from certain samplers class in <code>quark.factor.sampler</code> e.g. <code>FixedIntervalSampler</code>;<br />
+Could inherit from <code>EMA</code> and <code>Synthetic</code> in <code>quark.factor.utils</code> to composite and transform stock factor to index factor.</p>
+<hr />
+<h3 id="signature">signature</h3>
+<p>No kwargs allowed.<br />
+No advanced data type allowed, only the basic (int/float/str/etc.) and serializable ones (datetime.date is not serializable!)</p>
+<hr />
+<h3 id="market-data-filtering">market data filtering</h3>
+<p>Use <code>filter_mode</code> parameter as mentioned in the <a href="../factor_demo/#hooks-and-callbacks">demo</a>.</p>
+<hr />
+<h3 id="requesting-external-data">requesting external data</h3>
+<p>Add 'external' field in the <code>_meta</code> attribute or <code>__meta__</code> section.<br />
+External data will be loaded on BoD process, into <code>self.contexts['external']</code>.  </p>
+<hr />
+<h3 id="factor-value-caching">factor value caching</h3>
+<p>Register yor return value in <code>factor_name</code> method.<br />
+Do not hook the calculation process into <code>.value</code> property.  Do not assume the <code>.value</code> property even be called.<br />
+Calculate the indicator / factor value in <code>on_triggered</code> method, if possible. And properly cache the results.  <br />
+<code>.composite()</code> from <code>Synthetic</code> is, however, advised to be called in <code>.value</code>  </p>
+<hr />
+<h3 id="advanced-feature-communicate-with-other-factor">advanced feature: communicate with other factor</h3>
+<p>Use shared memory to communicate with other factor.</p>
+<pre><code class="language-python">from quark.base.memory_core import SyncMemoryCore
+
+memory_manager = SyncMemoryCore()
+
+# to set a value into the shared memory
+named_vector = memory_manager.register(dtype='NamedVector', name='some_name')
+named_vector['a'] = 123
+
+# to access the value is just like the same
+a = named_vector['a']
+</code></pre>
+<p>Each <code>NamedVector</code> can be accessed, from different monitor, as long as they have the same name.
+there are several available dtypes for the shared memory access.</p>
+<ul>
+<li>Vector = 'Vector'  </li>
+<li>NamedVector = 'NamedVector'  </li>
+<li>Deque = 'Deque'  </li>
+<li>IntValue = 'IntValue'  </li>
+<li>FloatValue = 'FloatValue'  </li>
+</ul>
+<hr />
+<h3 id="advanced-feature-serializing-and-deserializing">advanced feature: serializing and deserializing</h3>
+<p>Use <code>to_json</code> and <code>update_from_json</code></p>
+<p>Note that do not override <code>from_json</code> method.</p>
+<hr />
+<h3 id="advanced-feature-logging-and-profiling">advanced feature: logging and profiling</h3>
+<p>Use <code>quark.base.telemetrics</code> module.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../factor_demo/" class="btn btn-neutral float-left" title="Factor Demo"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../sampler/" class="btn btn-neutral float-right" title="Sampler">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../factor_demo/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../sampler/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Factor Demo - Quark-Doc</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Factor Demo";
+        var mkdocs_page_input_path = "factor\\factor_demo.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Quark-Doc
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">How to use</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/setup/">Setup</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/factor_validation/">Factor Training & Validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../usage/backtesting/">Backtesting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Factor Mining</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Factor Demo</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#__meta__">__meta__</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#arbitrarysampler">ArbitrarySampler</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#inherit-and-config-the-sampler">inherit and config the sampler</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#register-clear-topic">register &amp; clear topic</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hooks-and-callbacks">hooks and callbacks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#sampler-readiness">sampler readiness</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#synthetic">Synthetic</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main">main</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#full-demo">Full demo</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_monitor/">Factor Monitor</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../sampler/">Sampler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../data_fields/">Data Fields</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../factor_metrics/">Factor Metrics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../multi_factors/">Multi Factors</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Quark-Doc</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Factor Mining</li>
+      <li class="breadcrumb-item active">Factor Demo</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="a-factor-demo">A factor demo</h1>
+<p>A factor demo is presented in <code>quark-fp/factor_pool/sharpe.py</code>.<br />
+A typical factor file should include 4 parts:</p>
+<ol>
+<li><code>__meta__</code>: <code>name</code> &amp; <code>params</code> are the most importance two.</li>
+<li><code>xxxMonitor</code> &amp; <code>xxxAdaptiveMonitor</code>: class inherited from <code>FactorMonitor</code> and certain type of sampler, 
+   which do sampling according to timestamp or volume and implement factor calculation process for stocks.</li>
+<li><code>xxxAdaptiveIndexMonitor</code>: class inherited from <code>Synthetic</code>, which composite stock factor to index factor.</li>
+<li><code>main</code>: optional, added to run in terminal.</li>
+</ol>
+<p>We will discuss them in detail.</p>
+<hr />
+<h3 id="__meta__">__meta__</h3>
+<p>__meta__ will be used in scripts in <code>quark-fp\evaluation\*</code>. The <code>name</code> and
+<code>params</code> are used to generate list of <code>FactorMonitor</code> with different params set.
+<code>comments</code> should be documented to illustrate how the factor is calculated.</p>
+<pre><code class="language-python">__meta__ = {
+    'ver': '0.1.2.alpha3',
+    'name': 'IntensityAdaptiveIndexMonitor',
+    'params': [
+        dict(
+            sampling_interval=5,
+            sample_size=20,
+            name='Monitor.Intensity.Adaptive.Index.0'
+        ),
+        dict(
+            sampling_interval=10,
+            sample_size=20,
+            name='Monitor.Intensity.Adaptive.Index.1'
+        )
+    ],
+    'family': 'low-pass',
+    'market': 'cn',
+    'requirements': [
+        'quark @ git+https://github.com/BolunHan/Quark.git#egg=Quark',  # this requirement is not necessary, only put there as a demo
+        'numpy',  # not necessary too, since the env installed with numpy by default
+        'PyAlgoEngine',  # also not necessary
+    ],
+    'external_data': [],  # topic for required external data
+    'external_lib': [],  # other library, like c compiled lib file.
+    'factor_type': 'basic',
+    'activated_date': None,
+    'deactivated_date': None,
+    'dependencies': [],
+    'comments': &quot;&quot;&quot;
+    This is a demo for how to properly define a factor.
+    &quot;&quot;&quot;
+}
+</code></pre>
+<hr />
+<h3 id="arbitrarysampler">ArbitrarySampler</h3>
+<p>To use a sampler, a <code>FactorMonitor</code> class must have the following parts</p>
+<h4 id="inherit-and-config-the-sampler">inherit and config the sampler</h4>
+<p>Several samplers are provided in <code>quark.factor.sampler</code>, e.g. <code>FixedIntervalSampler</code>, <code>FixedVolumeSampler</code>, <code>VolumeProfileSampler</code>, which are subclass of abstract class <code>MarketDataSampler</code>.<br />
+To use a certain type of sampler, a factor should inherit from both <code>FactorMonitor</code> and the SamplerClass with needed signature.<br />
+Additional information about sampler is <a href="../sampler/">here</a>.</p>
+<pre><code class="language-python">class IntensityMonitor(FactorMonitor, FixedIntervalSampler):
+    def __init__(self, sampling_interval: float, sample_size: int, name: str = 'Monitor.Intensity', monitor_id: str = None):
+        super().__init__(name=name, monitor_id=monitor_id, filter_mode=FilterMode.no_cancel|FilterMode.no_auction)
+        FixedIntervalSampler.__init__(self=self, sampling_interval=sampling_interval, sample_size=sample_size)
+</code></pre>
+<pre><code class="language-python">class IntensityAdaptiveMonitor(IntensityMonitor, VolumeProfileSampler):
+    def __init__(self, sampling_interval: float, sample_size: int = 20, name: str = 'Monitor.Intensity.Adaptive', monitor_id: str = None):
+        super().__init__(
+            sampling_interval=sampling_interval,
+            sample_size=sample_size,
+            name=name,
+            monitor_id=monitor_id
+        )
+        VolumeProfileSampler.__init__(
+            self=self,
+            sampling_interval=sampling_interval,
+            sample_size=sample_size,
+            profile_type=VolumeProfileType.interval_volume
+        )
+</code></pre>
+<h4 id="register-clear-topic">register &amp; clear topic</h4>
+<p>When using sampler, some specific topics must be registered with <code>register_sampler</code> method before use in <code>__init__</code> method.  </p>
+<pre><code class="language-python">class IntensityMonitor(FactorMonitor, FixedIntervalSampler):
+    def __init__(self, sampling_interval: float, sample_size: int, name: str = 'Monitor.Intensity', monitor_id: str = None):
+
+        ...
+
+        self.register_sampler(topic='price', mode=SamplerMode.update)
+        self.register_sampler(topic='notional', mode=SamplerMode.accumulate)
+        self.register_sampler(topic='buy_price', mode=SamplerMode.update)
+        self.register_sampler(topic='buy_notional', mode=SamplerMode.accumulate)
+        self.register_sampler(topic='sell_price', mode=SamplerMode.update)
+        self.register_sampler(topic='sell_notional', mode=SamplerMode.accumulate)
+</code></pre>
+<p><code>clear</code> method should be overridden to re-register topics of the monitor.</p>
+<pre><code class="language-python">class IntensityMonitor(FactorMonitor, FixedIntervalSampler):
+    def clear(self):
+        super().clear()
+
+        # re-register topics
+        self.register_sampler(topic='price', mode=SamplerMode.update)
+        self.register_sampler(topic='notional', mode=SamplerMode.accumulate)
+        self.register_sampler(topic='buy_price', mode=SamplerMode.update)
+        self.register_sampler(topic='buy_notional', mode=SamplerMode.accumulate)
+        self.register_sampler(topic='sell_price', mode=SamplerMode.update)
+        self.register_sampler(topic='sell_notional', mode=SamplerMode.accumulate)
+</code></pre>
+<h4 id="hooks-and-callbacks">hooks and callbacks</h4>
+<p>The process of factor calculation is:<br />
+1. <code>MarketData</code> comes<br />
+2. filter <code>MarketData</code> if needed with <code>FilterMode</code><br />
+3. <code>accumulate_volume</code> if using volume scale sampler<br />
+4. check if timestamp or volume reach next obs in <code>log_obs</code><br />
+5. if reached, enroll the obs in <code>history</code> and calculate factor with <code>on_triggered</code>  </p>
+<ul>
+<li><code>FilterMode</code><br />
+   Basic filter for market data. There are 5 <code>enum.auto()</code> types,
+   including <code>no_cancal</code>, <code>no_auction</code>, <code>no_order</code>, <code>no_trade</code>, <code>no_tick</code>.
+   Filters can be added using <code>FilterMode.no_cancal|FilterMode.no_auction</code> in <code>__init__</code>.</li>
+</ul>
+<pre><code class="language-python">class IntensityMonitor(FactorMonitor, FixedIntervalSampler):
+   def __init__(self, sampling_interval: float, sample_size: int, name: str = 'Monitor.Intensity', monitor_id: str = None):
+       super().__init__(name=name, monitor_id=monitor_id, filter_mode=FilterMode.no_cancel | FilterMode.no_auction)
+</code></pre>
+<ul>
+<li><code>accumulate_volume</code><br />
+   When using volume scale sampler, i.e. <code>FixedVolumeSampler</code> and <code>VolumeProfileSampler</code>, <code>accumulate_volume</code> should be 
+   hooked in <code>on_tick_data</code> or <code>on_trade_data</code>, and it doesn't need to be associated with factor calculation.<br />
+<strong><code>on_trade_data</code> will be more precise than <code>on_tick_data</code></strong>.<br />
+   NOT hook <code>accumulate_volume</code> in <code>on_market_data</code>, volume from tick data will override volume from trade data.</li>
+</ul>
+<pre><code class="language-python">class IntensityAdaptiveMonitor(IntensityMonitor, VolumeProfileSampler):
+    def on_trade_data(self, trade_data: TradeData | TransactionData, **kwargs):
+       self.accumulate_volume(market_data=trade_data)
+</code></pre>
+<ul>
+<li><code>log_obs</code><br />
+   When certain type of <code>MarketData</code> comes, send all registered observations at the same time to the sampler is advised.<br />
+<code>log_obs</code> can be hooked in either <code>on_xxx_data</code> or <code>on_market_data</code> with filter.  </li>
+</ul>
+<pre><code class="language-python">class IntensityMonitor(FactorMonitor, FixedIntervalSampler):
+    def on_trade_data(self, trade_data: TradeData | TransactionData, **kwargs):
+       ticker = trade_data.ticker
+       timestamp = trade_data.timestamp
+       price = trade_data.price
+       side = trade_data.side
+       volume = trade_data.volume
+
+       if side.value == 1:
+           self.log_obs(ticker=ticker, timestamp=timestamp, price=price, notional=price * volume, buy_price=price, buy_notional=price * volume)
+       elif side.value == -1:
+           self.log_obs(ticker=ticker, timestamp=timestamp, price=price, notional=price * volume, sell_price=price, sell_notional=price * volume)
+       else:
+           pass
+</code></pre>
+<p>or</p>
+<pre><code class="language-python">class IntensityMonitor(FactorMonitor, FixedIntervalSampler):
+    def on_market_data(self, market_data: MarketData, **kwargs):
+       if not isinstance(market_data, TradeData | TransactionData):
+          return
+       ticker = market_data.ticker
+       timestamp = market_data.timestamp
+       price = market_data.price
+       side = market_data.side
+       volume = market_data.volume
+
+       if side.value == 1:
+           self.log_obs(ticker=ticker, timestamp=timestamp, price=price, notional=price * volume, buy_price=price, buy_notional=price * volume)
+       elif side.value == -1:
+           self.log_obs(ticker=ticker, timestamp=timestamp, price=price, notional=price * volume, sell_price=price, sell_notional=price * volume)
+       else:
+           pass
+</code></pre>
+<ul>
+<li><code>on_triggered</code><br />
+   Calculate factor in <code>on_triggered</code> and cache the results.<br />
+   All registered topics will call <code>on_triggered</code>, it's advised to filter needed topics in calculation.<br />
+   If other registered topics is needed, can use <code>self.get_history(topic,ticker)</code> to get the data.</li>
+</ul>
+<pre><code class="language-python">class IntensityMonitor(FactorMonitor, FixedIntervalSampler):
+   def on_triggered(self, ticker, topic, sampler, **kwargs):
+       if topic == 'buy_price':
+           self._intensity_buy[ticker] = self.calculate_intensity(price=sampler.history.get(ticker))
+       elif topic == 'sell_price':
+           self._intensity_sell[ticker] = self.calculate_intensity(price=sampler.history.get(ticker))
+       elif topic == 'price':
+           self._intensity_all[ticker] = self.calculate_intensity(price=sampler.history.get(ticker))
+</code></pre>
+<h4 id="sampler-readiness">sampler readiness</h4>
+<p><code>VolumeProfileSampler</code> need fitting for volume prediction model. <code>is_ready</code> property should be overridden with correct readiness flag if using this sampler.</p>
+<pre><code class="language-python">class IntensityAdaptiveMonitor(IntensityMonitor, VolumeProfileSampler):
+   @property
+   def is_ready(self) -&gt; bool:
+       return self.profile_ready
+</code></pre>
+<hr />
+<h3 id="synthetic">Synthetic</h3>
+<p>Build the class <code>xxxAdaptiveIndexMonitor</code> to composite stock factor to index factor.<br />
+<br>
+This class inherit from the previous class which calculate stock factor and <code>Synthetic</code> from <code>quark.factor.utils</code>.  </p>
+<pre><code class="language-python">class IntensityAdaptiveIndexMonitor(IntensityAdaptiveMonitor, Synthetic):
+    def __init__(self, sampling_interval: float, sample_size: int, weights: dict[str, float] = None, name: str = 'Monitor.Intensity.Adaptive.Index', monitor_id: str = None):
+        super().__init__(
+            sampling_interval=sampling_interval,
+            sample_size=sample_size,
+            name=name,
+            monitor_id=monitor_id
+        )
+
+        Synthetic.__init__(self=self, weights=weights)
+</code></pre>
+<p>This class override <code>__call__</code> to filter MarketData with tick in weights.  </p>
+<pre><code class="language-python">class IntensityAdaptiveIndexMonitor(IntensityAdaptiveMonitor, Synthetic):
+    def __call__(self, market_data: MarketData, **kwargs):
+        ticker = market_data.ticker
+
+        if self.weights and ticker not in self.weights:
+            return
+
+        super().__call__(market_data=market_data, **kwargs)
+</code></pre>
+<p>This class must override <code>factor_names</code> to cache factor value, and <code>value</code> with method <code>composite</code> to calculate index factor based on weighted stock factor.<br />
+Note that <code>.value</code> can be multi-dimension. There are 3 dimension <code>intensity.buy</code>, <code>intensity.sell</code>, <code>intensity.all</code> in the demo.</p>
+<pre><code class="language-python">class IntensityAdaptiveIndexMonitor(IntensityAdaptiveMonitor, Synthetic):
+    def factor_names(self, subscription: list[str]) -&gt; list[str]:
+        return [
+            f'{self.name.removeprefix(&quot;Monitor.&quot;)}.intensity.buy',
+            f'{self.name.removeprefix(&quot;Monitor.&quot;)}.intensity.sell',
+            f'{self.name.removeprefix(&quot;Monitor.&quot;)}.intensity.all'
+        ]
+
+    @property
+    def value(self) -&gt; dict[str, float]:
+        intensity_b = self._intensity_buy
+        intensity_s = self._intensity_sell
+        intensity_a = self._intensity_all
+
+        return {
+            'intensity.buy': self.composite(values=intensity_b),
+            'intensity.sell': self.composite(values=intensity_s),
+            'intensity.all': self.composite(values=intensity_a),
+        }
+</code></pre>
+<hr />
+<p><strong>There are other things should be noted when designing a <code>FactorMonitor</code> for customized purpose. See <a href="../factor_monitor/">here</a>.</strong></p>
+<hr />
+<h3 id="main">main</h3>
+<p>The <code>main</code> can be used to validate the factor.<br />
+The <code>nodes</code> param can be set to validate one factor or multi factors together.<br />
+The <code>config_overrides</code> param will override <code>config.ini</code> in CWD.</p>
+<hr />
+<h3 id="full-demo">Full demo</h3>
+<pre><code class="language-python">import numpy as np
+from algo_engine.base import MarketData, TradeData, TransactionData, TickData
+from quark.base import LOGGER
+from quark.factor.utils import FilterMode
+from quark.factor import SamplerMode, Synthetic, FactorMonitor, VolumeProfileSampler, FixedIntervalSampler, VolumeProfileType
+__meta__ = {
+    'ver': '0.1.2.alpha3',
+    'name': 'IntensityAdaptiveIndexMonitor',
+    'params': [
+        dict(
+            sampling_interval=5,
+            sample_size=20,
+            name='Monitor.Intensity.Adaptive.Index.0'
+        ),
+        dict(
+            sampling_interval=10,
+            sample_size=20,
+            name='Monitor.Intensity.Adaptive.Index.1'
+        )
+    ],
+    'family': 'low-pass',
+    'market': 'cn',
+    'requirements': [
+        'quark @ git+https://github.com/BolunHan/Quark.git#egg=Quark',  # this requirement is not necessary, only put there as a demo
+        'numpy',  # not necessary too, since the env installed with numpy by default
+        'PyAlgoEngine',  # also not necessary
+    ],
+    'external_data': [],  # topic for required external data
+    'external_lib': [],  # other library, like c compiled lib file.
+    'factor_type': 'basic',
+    'activated_date': None,
+    'deactivated_date': None,
+    'dependencies': [],
+    'comments': &quot;&quot;&quot;
+    This is a demo for how to properly define a factor.
+    &quot;&quot;&quot;
+}
+
+
+class IntensityMonitor(FactorMonitor, FixedIntervalSampler):
+    def __init__(self, sampling_interval: float, sample_size: int, name: str = 'Monitor.Intensity', monitor_id: str = None):
+        super().__init__(name=name, monitor_id=monitor_id, filter_mode=FilterMode.no_cancel|FilterMode.no_auction)
+        FixedIntervalSampler.__init__(self=self, sampling_interval=sampling_interval, sample_size=sample_size)
+
+        self._intensity_buy: dict[str, float] = {}
+        self._intensity_sell: dict[str, float] = {}
+        self._intensity_all: dict[str, float] = {}
+
+        self.register_sampler(topic='price', mode=SamplerMode.update)
+        self.register_sampler(topic='notional', mode=SamplerMode.accumulate)
+        self.register_sampler(topic='buy_price', mode=SamplerMode.update)
+        self.register_sampler(topic='buy_notional', mode=SamplerMode.accumulate)
+        self.register_sampler(topic='sell_price', mode=SamplerMode.update)
+        self.register_sampler(topic='sell_notional', mode=SamplerMode.accumulate)
+
+    def on_tick_data(self, tick_data: TickData, **kwargs):
+        x = tick_data.total_traded_notional
+
+    def on_trade_data(self, trade_data: TradeData | TransactionData, **kwargs):
+        ticker = trade_data.ticker
+        timestamp = trade_data.timestamp
+        price = trade_data.price
+        side = trade_data.side
+        volume = trade_data.volume
+
+        if side.value == 1:
+            self.log_obs(ticker=ticker, timestamp=timestamp, price=price, notional=price * volume, buy_price=price, buy_notional=price * volume)
+        elif side.value == -1:
+            self.log_obs(ticker=ticker, timestamp=timestamp, price=price, notional=price * volume, sell_price=price, sell_notional=price * volume)
+        else:
+            pass
+
+    def calculate_intensity(self, price, epsilon: float=1e-8) -&gt; float:
+        price_vector = np.array(price)
+
+        if len(price_vector) &lt; 3:
+            return np.nan
+
+        price_vector = price_vector[:-1]
+        price_pct_vector = np.diff(price_vector) / price_vector[:-1]
+        mean = np.mean(price_pct_vector)
+        std = np.std(price_pct_vector)
+        return np.divide(mean, std + epsilon)
+
+    def on_triggered(self, ticker, topic, sampler, **kwargs):
+        if topic == 'buy_price':
+            self._intensity_buy[ticker] = self.calculate_intensity(price=sampler.history.get(ticker))
+        elif topic == 'sell_price':
+            self._intensity_sell[ticker] = self.calculate_intensity(price=sampler.history.get(ticker))
+        elif topic == 'price':
+            self._intensity_all[ticker] = self.calculate_intensity(price=sampler.history.get(ticker))
+
+    def factor_names(self, subscription: list[str]) -&gt; list[str]:
+        return [
+            f'{self.name.removeprefix(&quot;Monitor.&quot;)}.{ticker}' for ticker in subscription
+        ]
+
+    def clear(self):
+        super().clear()
+
+        # re-register topics
+        self.register_sampler(topic='price', mode=SamplerMode.update)
+        self.register_sampler(topic='notional', mode=SamplerMode.accumulate)
+        self.register_sampler(topic='buy_price', mode=SamplerMode.update)
+        self.register_sampler(topic='buy_notional', mode=SamplerMode.accumulate)
+        self.register_sampler(topic='sell_price', mode=SamplerMode.update)
+        self.register_sampler(topic='sell_notional', mode=SamplerMode.accumulate)
+
+    @property
+    def value(self) -&gt; dict[str, float] | float:
+        return self._intensity_all
+
+
+class IntensityAdaptiveMonitor(IntensityMonitor, VolumeProfileSampler):
+    def __init__(self, sampling_interval: float, sample_size: int = 20, name: str = 'Monitor.Intensity.Adaptive', monitor_id: str = None):
+        super().__init__(
+            sampling_interval=sampling_interval,
+            sample_size=sample_size,
+            name=name,
+            monitor_id=monitor_id
+        )
+        # for profile_type = VolumeProfileType.interval_volume or VolumeProfileType.accumulative_volume
+        VolumeProfileSampler.__init__(
+            self=self,
+            sampling_interval=sampling_interval,
+            sample_size=sample_size,
+            profile_type=VolumeProfileType.interval_volume
+        )
+        # for profile_type = VolumeProfileType.simple_online
+        # VolumeProfileSampler.__init__(
+        #     self=self,
+        #     sampling_interval=sampling_interval,
+        #     sample_size=sample_size,
+        #     n_window = 100,
+        #     profile_type=VolumeProfileType.simple_online
+        # )
+
+    def on_trade_data(self, trade_data: TradeData | TransactionData, **kwargs):
+        self.accumulate_volume(market_data=trade_data)
+        super().on_trade_data(trade_data=trade_data, **kwargs)
+
+    @property
+    def is_ready(self) -&gt; bool:
+        return self.profile_ready
+
+
+class IntensityAdaptiveIndexMonitor(IntensityAdaptiveMonitor, Synthetic):
+    def __init__(self, sampling_interval: float, sample_size: int, weights: dict[str, float] = None, name: str = 'Monitor.Intensity.Adaptive.Index', monitor_id: str = None):
+        super().__init__(
+            sampling_interval=sampling_interval,
+            sample_size=sample_size,
+            name=name,
+            monitor_id=monitor_id
+        )
+
+        Synthetic.__init__(self=self, weights=weights)
+
+    def __call__(self, market_data: MarketData, **kwargs):
+        ticker = market_data.ticker
+
+        if self.weights and ticker not in self.weights:
+            return
+
+        super().__call__(market_data=market_data, **kwargs)
+
+    def factor_names(self, subscription: list[str]) -&gt; list[str]:
+        return [
+            f'{self.name.removeprefix(&quot;Monitor.&quot;)}.intensity.buy',
+            f'{self.name.removeprefix(&quot;Monitor.&quot;)}.intensity.sell',
+            f'{self.name.removeprefix(&quot;Monitor.&quot;)}.intensity.all'
+        ]
+
+    @property
+    def value(self) -&gt; dict[str, float]:
+        intensity_b = self._intensity_buy
+        intensity_s = self._intensity_sell
+        intensity_a = self._intensity_all
+
+        return {
+            'intensity.buy': self.composite(values=intensity_b),
+            'intensity.sell': self.composite(values=intensity_s),
+            'intensity.all': self.composite(values=intensity_a),
+        }
+
+
+def main():
+    from quark.base import safe_exit
+    from quark_validator.factor.evaluation import FactorTree, FactorNode, eval_tree
+
+    factor_tree = FactorTree(
+        nodes=[
+            FactorNode(name='Monitor.Intensity.Adaptive.Index.0', file=__file__),
+            FactorNode(name='Monitor.Intensity.Adaptive.Index.1', file=__file__)
+        ],
+        config_overrides={
+            'Datalore': {
+                &quot;FEE_RATE&quot;: 0.00032,
+                &quot;ALPHA&quot;: 0.1,
+                &quot;POLY_DEGREE&quot;: 2,
+                &quot;Calibration&quot;: {
+                    &quot;pct_change_900&quot;: {
+                        &quot;optimizer&quot;: &quot;SLSQP&quot;,
+                        &quot;tol&quot;: 1e-10,
+                        &quot;l1&quot;: 0.01,
+                        &quot;l2&quot;: 0.01,
+                        &quot;balanced_label&quot;: True
+                    },
+                    &quot;state_3&quot;: {
+                        &quot;optimizer&quot;: &quot;SLSQP&quot;,
+                        &quot;tol&quot;: 1e-07,
+                        &quot;l1&quot;: 0.001,
+                        &quot;l2&quot;: 0.001,
+                        &quot;balanced_label&quot;: True
+                    },
+                    &quot;up_actual_3&quot;: {
+                        &quot;optimizer&quot;: &quot;SLSQP&quot;,
+                        &quot;tol&quot;: 1e-06
+                    },
+                    &quot;down_actual_3&quot;: {
+                        &quot;optimizer&quot;: &quot;SLSQP&quot;,
+                        &quot;tol&quot;: 1e-06
+                    },
+                    &quot;target_actual_3&quot;: {
+                        &quot;optimizer&quot;: &quot;SLSQP&quot;,
+                        &quot;tol&quot;: 1e-10,
+                        &quot;l1&quot;: 0.0001,
+                        &quot;l2&quot;: 0.0001,
+                        &quot;balanced_label&quot;: True
+                    },
+                    &quot;up_smoothed_3&quot;: {
+                        &quot;optimizer&quot;: &quot;SLSQP&quot;,
+                        &quot;tol&quot;: 1e-06
+                    },
+                    &quot;down_smoothed_3&quot;: {
+                        &quot;optimizer&quot;: &quot;SLSQP&quot;,
+                        &quot;tol&quot;: 1e-06
+                    },
+                    &quot;target_smoothed_3&quot;: {
+                        &quot;optimizer&quot;: &quot;SLSQP&quot;,
+                        &quot;tol&quot;: 1e-10,
+                        &quot;l1&quot;: 0.0001,
+                        &quot;l2&quot;: 0.0001,
+                        &quot;balanced_label&quot;: True
+                    }
+                }
+            }
+        }
+    )
+
+    eval_tree(factor_tree)
+    safe_exit()
+
+
+if __name__ == '__main__':
+    main()
+
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../usage/backtesting/" class="btn btn-neutral float-left" title="Backtesting"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../factor_monitor/" class="btn btn-neutral float-right" title="Factor Monitor">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../usage/backtesting/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../factor_monitor/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
