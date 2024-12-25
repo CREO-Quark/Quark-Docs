@@ -1,0 +1,50 @@
+# Welcome to Quark
+
+Quark is a python HFT trading / testing platform.
+
+Quark is designed as a factor driven trading platform, which  
+<br>
+- Can design, build, test, validate fit and ensemble the factors.  
+- Generates trade signal with the factor values.  
+- Handles market data and orders, providing position management.  
+- Ensures logic / code consistency between live-production and backtesting.  
+- Can be applied to trading stocks, stock indices, derivatives, etc.  
+[![quark](https://mermaid.ink/img/pako:eNqlWG1vozgQ_ivI0q66Uls1hCRttKqUAlVXKSrXoN7qmn5wwU24EhwZomsuSn_7jW2SAiG8HVICxvPM2DPjeWGDXOoRNERvAf3HnWMWK87NNFTgilavM4aXc8X8iAkLcfA8Rd_D12g5RS-SIkM1sWB-4i8UC8fuPEPDr0lns5miBWbvJFY8HOMp2m5zJConiRn2iMLIkrI4yhKR0JuGBaLN3yDa_IDlhzNyINmslmxWSRZE3S8iyjzCaq5uElOGZwSWqGN3frg-4-b5ZIp-vrJr5Ra7QKyIZ5vSQDzx3xT9eMlJyonci7unbpWp7PUomFEznPkhKaTMMsRrwjpH6fhlGRPYAvzDOg9nDWsEs_B_MJtT2aFYtVTsntaioQ-Ks3AIimaASV4oyZtCtFw435glfUOo3RAO8jIcDue-55HwGE5ties-J7bOLTExOqMuiSJh_DrctMpVHEF2kmXk3U6MOym_O6Y4tYyBWoMBV8T5-bkCvxo71crEhVlxxSxu-ZbTB-wJBysSVcu-VdsCtRbAgiPBrwcDeD3wqFPf0PvjkTntfKDI0VHjeD4jbuzTcJ8M8tco40BPf47svQ1KzT7K-I1TH9dN43655JWwWU2oVtfTjuje5pnNppEvNCLP64KEcaHER0786EfvecJp-O1bnlgf6XcmT5syRUjT4tCTDzxd-OEsu-ZDJk-je2DhMOyHQJ3jAS7nQ86DhR_femUU7pZG4cmdxRPYBIoH4ikWWVC2lvnqkPa21-JI3PbbgC4bgvZJtSyX_7GCYFudMvnpvKeMHzf-qPDnI6Epq2mtVNPCZTIHz4LiLWgUuHW1BF8jbuuN4raulUgLq6UtA-ySOQ28rBM2P8OGqT_ncqXDyO6UGIRXwbxMeKmyUK_SQja3kA1nwXdj4qWcr1pdttoeWlM_glZrLSZlEO1_GSSr1X6lVp2M3zuYzRI71nV8Ry1jUMPznUae72hl4pq5fq-BpusGdnB5P4K0oCdhKhkq-i5U5bmPMwYYkyBYJ2mK-dAf-ri2NcZqbU4VZhnXNslYqy2zspq0DH3DQ8nfFLBrJae6bX0bTKCZjMlsLSoA-VicYf0ZtN8nJyLLQ_d5T2e-m4j7UdBwmQ8G0JrUKGzHbsTszZHZX7YOs_Bf3KyVtaDGjfLz7Oyad4PyxaSjZMeqGPNOMIGYOQpTlSwEiWy6Uy9yYjJNn5wDRsDwjPd1knFHDG_F7ZqXKnk6uSRLlXRqAd3n5yfv2-S9m-z_k19F_DTJT5P8tBS_ZPXWSEw9GILwqzQXQ9sSt0crv9ldRZEo8s6S_HuCXJe7tOWeHTkad5IV6TlMX2Lkjm25f0eOxuohhu9zn_vFyJY3R97GiWYO5FxKOVITttSLI0dj7UuORKUTveCXTjT5F70CDGhJSapg5avYgHpPupypJxQGeePKTkXlHU1WwM6uemJBcQQTnwTbfefHCP7hoCj5-UcrkTXhBUYygzJkktANcBTBghQZtZQ3PwjO6BK7EFaGysWpEsWMvpPUq_3XnngdkP2HuVrAL9iu22iIshoCzN8NAeLLVUNM-lNWU3Hiu1YbkFoLJDs1CcvGqsbw1nsU_UqbLXbbgLQ2oF4bUL-xCncBtDkwVSg1Bu_Sei0gOkULwhbY99AQbfiepyiekwVk-SE8euQNr4J4iqbhFkjxKqaTdeiiYcxW5BQxuprN0fANBxGMVkvo-onhY6g0FjsSKPi5E8oP_uK7_yla4vAvSvckMETDDfpAw96ge969vOj11MFVv6teDk7RGg27_fML9aJ_1e0Oep3eQOtr21P0r2BwcX7Vu7hUtUF_cHXFH7Xtf-_luuQ?type=png)](https://mermaid.live/edit#pako:eNqlWG1vozgQ_ivI0q66Uls1hCRttKqUAlVXKSrXoN7qmn5wwU24EhwZomsuSn_7jW2SAiG8HVICxvPM2DPjeWGDXOoRNERvAf3HnWMWK87NNFTgilavM4aXc8X8iAkLcfA8Rd_D12g5RS-SIkM1sWB-4i8UC8fuPEPDr0lns5miBWbvJFY8HOMp2m5zJConiRn2iMLIkrI4yhKR0JuGBaLN3yDa_IDlhzNyINmslmxWSRZE3S8iyjzCaq5uElOGZwSWqGN3frg-4-b5ZIp-vrJr5Ra7QKyIZ5vSQDzx3xT9eMlJyonci7unbpWp7PUomFEznPkhKaTMMsRrwjpH6fhlGRPYAvzDOg9nDWsEs_B_MJtT2aFYtVTsntaioQ-Ks3AIimaASV4oyZtCtFw435glfUOo3RAO8jIcDue-55HwGE5ties-J7bOLTExOqMuiSJh_DrctMpVHEF2kmXk3U6MOym_O6Y4tYyBWoMBV8T5-bkCvxo71crEhVlxxSxu-ZbTB-wJBysSVcu-VdsCtRbAgiPBrwcDeD3wqFPf0PvjkTntfKDI0VHjeD4jbuzTcJ8M8tco40BPf47svQ1KzT7K-I1TH9dN43655JWwWU2oVtfTjuje5pnNppEvNCLP64KEcaHER0786EfvecJp-O1bnlgf6XcmT5syRUjT4tCTDzxd-OEsu-ZDJk-je2DhMOyHQJ3jAS7nQ86DhR_femUU7pZG4cmdxRPYBIoH4ikWWVC2lvnqkPa21-JI3PbbgC4bgvZJtSyX_7GCYFudMvnpvKeMHzf-qPDnI6Epq2mtVNPCZTIHz4LiLWgUuHW1BF8jbuuN4raulUgLq6UtA-ySOQ28rBM2P8OGqT_ncqXDyO6UGIRXwbxMeKmyUK_SQja3kA1nwXdj4qWcr1pdttoeWlM_glZrLSZlEO1_GSSr1X6lVp2M3zuYzRI71nV8Ry1jUMPznUae72hl4pq5fq-BpusGdnB5P4K0oCdhKhkq-i5U5bmPMwYYkyBYJ2mK-dAf-ri2NcZqbU4VZhnXNslYqy2zspq0DH3DQ8nfFLBrJae6bX0bTKCZjMlsLSoA-VicYf0ZtN8nJyLLQ_d5T2e-m4j7UdBwmQ8G0JrUKGzHbsTszZHZX7YOs_Bf3KyVtaDGjfLz7Oyad4PyxaSjZMeqGPNOMIGYOQpTlSwEiWy6Uy9yYjJNn5wDRsDwjPd1knFHDG_F7ZqXKnk6uSRLlXRqAd3n5yfv2-S9m-z_k19F_DTJT5P8tBS_ZPXWSEw9GILwqzQXQ9sSt0crv9ldRZEo8s6S_HuCXJe7tOWeHTkad5IV6TlMX2Lkjm25f0eOxuohhu9zn_vFyJY3R97GiWYO5FxKOVITttSLI0dj7UuORKUTveCXTjT5F70CDGhJSapg5avYgHpPupypJxQGeePKTkXlHU1WwM6uemJBcQQTnwTbfefHCP7hoCj5-UcrkTXhBUYygzJkktANcBTBghQZtZQ3PwjO6BK7EFaGysWpEsWMvpPUq_3XnngdkP2HuVrAL9iu22iIshoCzN8NAeLLVUNM-lNWU3Hiu1YbkFoLJDs1CcvGqsbw1nsU_UqbLXbbgLQ2oF4bUL-xCncBtDkwVSg1Bu_Sei0gOkULwhbY99AQbfiepyiekwVk-SE8euQNr4J4iqbhFkjxKqaTdeiiYcxW5BQxuprN0fANBxGMVkvo-onhY6g0FjsSKPi5E8oP_uK7_yla4vAvSvckMETDDfpAw96ge969vOj11MFVv6teDk7RGg27_fML9aJ_1e0Oep3eQOtr21P0r2BwcX7Vu7hUtUF_cHXFH7Xtf-_luuQ)
+
+---
+# Function
+
+## Data Processing
+
+Quark collect lv2 data stream.  
+<br>
+- The market data is fed into a MarketDataService (`MDS`).  
+- Multiple FactorMonitor are registered at `MDS`, each representing a factor.  
+- Utilizing multiprocessing and shared memory to achieve low latency and high performance.  
+- Market data processing follows a NO-COPY, No-ALTERATION principle.  
+
+## Factor Generation
+
+For each MarketDataMonitor, the strategy collect its signal (factor values) on a given interval.  
+<br>
+- Use .value property of the monitor to collect generated factor.  
+- The factor value must be a float, or a dict of float.  
+- A MonitorManager is provided to collect signal from other processes.  
+- Collected factor values are logged by a metric module, for decision-making and other future usage such as training, reviewing.  
+
+## Fitting
+
+With the collected factor values, the Calibration module provides several fitting algos for different prediction targets.
+
+By default, a general linear module with bootstrap is provided.
+
+Several prediction targets are also provided, see [prediction target](usage/factor_validation.md#pred_var).
+
+## Trade Decision
+
+Based on the collected signal and current position / balance, the decision core is to make a trade decision (signal).
+
+By default, the strategy is using a dummy core, so that no trade action can be triggered without proper initialization.
+
+In production mode, the dummy core can be Override by a real decision core, like a MajorityDecisionCore.
+

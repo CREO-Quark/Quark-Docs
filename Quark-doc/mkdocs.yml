@@ -1,0 +1,17 @@
+site_name: Quark-Doc
+nav:
+  - Home: index.md
+  - How to use:
+      - Setup: usage/setup.md
+      - Factor Training & Validation: usage/factor_validation.md
+      - Backtesting: usage/backtesting.md
+  - Factor Mining:
+      - Factor Demo: factor/factor_demo.md
+      - Factor Monitor: factor/factor_monitor.md
+      - Sampler: factor/sampler.md
+      - Data Fields: factor/data_fields.md
+      - Factor Metrics: factor/factor_metrics.md
+      - Multi Factors: factor/multi_factors.md
+plugins:
+  - search
+theme: readthedocs
